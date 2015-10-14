@@ -6,11 +6,14 @@ var ADMIN_POST_TYPE_PRESS_RELEASE = {
     },
     onPressReleaseFrontPageClick: function(event)
     {
+        var self = ADMIN_POST_TYPE_PRESS_RELEASE;
+        var c = jQuery(event.currentTarget);
 	    var data = {
-			__actions: 'option-update',
+			__actions: 'post-meta-update',
 			action: 'data_request',
-			option_name: '_taxonomy_department_' + ul.attr('data-slug') + '_post_wilfilmer_orderby',
-			option_value: wilfilmers.join('&')
+            post_id: c.parent().attr('data-post_id'),
+			meta_key: 'press_release_front_page',
+			meta_value: c.is(':checked') ? '1':'0'
 		};
 		jQuery.post(ajaxurl, data, 'json');
     }
