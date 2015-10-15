@@ -9,7 +9,7 @@ String.prototype.ltrim = function(c) {
         remove_chars.push(c);
     }
     var str = this.split('');
-    while(str.length && remove_chars.contains(str[0])) {
+    while(str.length && myArrayClass.contains(remove_chars, str[0])) {
         str.shift();
     }
 
@@ -45,7 +45,7 @@ String.prototype.rtrim = function(c) {
         remove_chars.push(c);
     }
     var str = this.split('');
-    while(str.length && remove_chars.contains(str[str.length-1])) {
+    while(str.length && myArrayClass.contains(remove_chars, str[str.length-1])) {
         str.pop();
     }
 
