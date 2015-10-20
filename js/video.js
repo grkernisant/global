@@ -1,4 +1,4 @@
-var CRUX_VideoPlayer = {
+var WILFILM_VideoPlayer = {
 	/* constants */
 	CONTROLS_STATUS: {
 		DISABLED: 'disabled',
@@ -46,7 +46,7 @@ var CRUX_VideoPlayer = {
 	/* methods */
 	getHTML5: function(obj)
 	{
-		var attrs = new Array('id', 'width', 'height', 'poster', 'preload', 'controls', 'autoplay', 'sources', 'data', 'title');
+		var attrs = new Array('id', 'width', 'height', 'poster', 'preload', 'controls', 'autoplay', 'loop', 'sources', 'data', 'title');
 		var i = 0;
 		var l = attrs.length;
 		var a = new Array();
@@ -120,6 +120,7 @@ var CRUX_VideoPlayer = {
 
 					case 'controls':
 					case 'autoplay':
+					case 'loop':
 						if (typeof(obj[attrs[i]])!='undefined' && (obj[attrs[i]]==true || obj[attrs[i]]==attrs[i])) {
 							a.push(attrs[i] + '="' + obj[attrs[i]] + '"');
 						}
