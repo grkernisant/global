@@ -1,7 +1,14 @@
 var CUSTOM_RELATED_POSTS = {
 	init: function($) {
-		$('.related-post').on('click', this.onRelatedPostClick);
+		$('ul.related-posts').sortable({
+			distance: 10,
+			items: '> li',
+			placeholder: 'sortable-placeholder',
+			revert: true,
+			update: this.onRelatedPostUpdateSort
+		});
 
+		$('.related-post').on('click', this.onRelatedPostClick);
 		$('.related-post .thumbnail').each(function() {
 			var bg = jQuery(this);
 			var li = bg.parent();
@@ -36,6 +43,10 @@ var CUSTOM_RELATED_POSTS = {
 			meta_value: related
 		};
 		jQuery.post(ajaxurl, data, 'json');
+	},
+	onRelatedPostUpdateSort: function(event, ui) {
+		var ul = ui.item.parent();
+		CUSTOM_RELATED_POSTS.updateRelatedPosts(ul);
 	}
 };
 
