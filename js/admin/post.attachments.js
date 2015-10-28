@@ -1,10 +1,67 @@
 var CUSTOM_POST_ATTACHMENTS = {
 	post_tags: undefined,
 
+	_onPreload: function(video) {
+		var data;
+		var w = video.videoWidth;
+		var h = video.videoHeight;
+		if (typeof(jQuery(video).attr('data-video_width'))=='undefined') {
+			jQuery(video)
+				.attr('data-video_width', w)
+				.attr('data-video_height', h);
+			var file_id = jQuery(video).parents('.custom-post-attachment[data-file_id]').attr('data-file_id');
+			// update post meta video_width
+			data = {
+				__actions: 'post-meta-update',
+				action: 'data_request',
+				post_id: parseInt(file_id),
+				meta_key: 'video_width',
+				meta_value: w
+			};
+			jQuery.post(ajaxurl, data, 'json');
+			// update post meta video_height
+			data = {
+				__actions: 'post-meta-update',
+				action: 'data_request',
+				post_id: parseInt(file_id),
+				meta_key: 'video_height',
+				meta_value: h
+			};
+			jQuery.post(ajaxurl, data, 'json');
+		}
+	},
+	_onPreloadLoadedData: function(event) {
+		var video = event.target;
+		CUSTOM_POST_ATTACHMENTS._onPreload(video);
+	},
+	_onPreloadLoadedMetaData: function(event) {
+		var video = event.target;
+		CUSTOM_POST_ATTACHMENTS._onPreload(video);
+	},
+	bindVideoEvents: function(video) {
+		var self = this;
+		var WVP = WILFILM_VideoPlayer;
+		var l = WVP.EVENTS.__default.length;
+		var i = 0;
+		while (i<l) {
+			var e = WVP.EVENTS.__default[i];
+            video.addEventListener(
+                e,
+                function(event) {
+                    self.onVideoEvent.call(self, event);
+                },
+                false
+            );
+			i++;
+		}
+	},
 	init: function($) {
+		var self = CUSTOM_POST_ATTACHMENTS;
+
 		$('.custom-post-attachment .action-edit').on('click', this.onPostAttachmentEditClick);
 		$('.custom-post-attachment .action-delete').on('click', this.onPostAttachmentDeleteClick);
 
+		// images
 		$('.custom-post-attachment .attachment-bg').each(function() {
 			var bg = jQuery(this);
 			var li = bg.parent();
@@ -13,6 +70,24 @@ var CUSTOM_POST_ATTACHMENTS = {
 				.width(li.width())
 				.height(li.height());
 		});
+
+		// videos
+		$('.custom-post-attachment .video-info').each(function() {
+			var div = jQuery(this);
+			var html = WILFILM_VideoPlayer.getHTML5({
+				autoplay: false,
+				controls: false,
+				height: 1,
+				preload: 'metadata',
+				sources: [{
+					src: div.attr('data-video_src')
+				}],
+				width: 1
+			});
+			var video = div.html(html).children().first();
+			video.attr('data-event_mode', 'preload');
+			self.bindVideoEvents(video.get(0))
+		});		
 	},
 	onPostAttachmentEditSaveClick: function() {
 		var form = jQuery('#custom-post-attachment-edit');
@@ -48,6 +123,17 @@ var CUSTOM_POST_ATTACHMENTS = {
 		}
 
 		jQuery(this).dialog('close');
+	},
+	onVideoEvent: function(event) {
+		var WVP = WILFILM_VideoPlayer;
+        var mode = jQuery(event.target).attr('data-event_mode');
+        var func = '_on' + mode.toCamelCase();
+        func+= typeof(WVP.EVENTS.__name[event.type])!='undefined' ? WVP.EVENTS.__name[event.type]:event.type.toCamelCase();
+        if (typeof(this[func])=='function') {
+            this[func].call(this, event);
+        } else {
+            // console.log(mode + ' ' + event.type + ' !' + func);
+        }
 	},
 	editPostAttachmentForm: function(file_id) {
 		var file = jQuery('.custom-post-attachment[data-file_id="' + file_id + '"]');

@@ -39,7 +39,18 @@ var WILFILM_VideoPlayer = {
 			UP:    38,
 			RIGHT: 39,
 			DOWN:  40
-		}
+		},
+		__name: {
+            canplay:        'CanPlay',
+            canplaythrough: 'CanPlayThrough',
+            durationchange: 'DurationChange',
+            loadeddata:     'LoadedData',
+            loadedmetadata: 'LoadedMetaData',
+            loadstart:      'LoadStart',
+            ratechange:     'PlaybackRateChange',
+            timeupdate:     'TimeUpdate',
+            volumechange:   'VolumeChange'
+        }
 	},
 	FRAME_RATE: 25,
 	
