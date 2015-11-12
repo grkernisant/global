@@ -221,12 +221,12 @@ var CUSTOM_POST_ATTACHMENTS = {
 				ID: parseInt(file.attr('data-file_id')),
 				post_status: 'trash'
 			};
-			jQuery.post(ajaxurl, data, 'json', self.onPostAttachmentDeleteClickResponse);
+			jQuery.post(ajaxurl, data, self.onPostAttachmentDeleteClickResponse, 'json');
 		}
 	},
 	onPostAttachmentDeleteClickResponse: function(data) {
-		if (typeof(data['ID'])!='undefined') {
-			jQuery('.custom-post-attachment[data-file_id="' + data['ID'] + '"]').remove();
+		if (typeof(data['response'][0]['ID'])!='undefined') {
+			jQuery('.custom-post-attachment[data-file_id="' + data['response'][0]['ID'] + '"]').remove();
 		}
 	},
 	onPostAttachmentEditClick: function(event) {
